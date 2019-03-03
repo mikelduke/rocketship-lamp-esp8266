@@ -1,3 +1,15 @@
+uint8_t currentPatternIndex = 0;
+
+#define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
+
+typedef void (*Pattern)();
+typedef Pattern PatternList[];
+typedef struct {
+  Pattern pattern;
+  String name;
+} PatternAndName;
+typedef PatternAndName PatternAndNameList[];
+
 void fadeall() { 
   for(int i = 0; i < NUM_LEDS; i++) { 
     leds[i].nscale8(250); 
