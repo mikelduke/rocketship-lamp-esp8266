@@ -15,7 +15,7 @@ CRGB leds[NUM_LEDS];
 #include "Patterns.h"
 
 #include <ESP8266WiFi.h>
-#include "WiFiConfig.h"
+#include "WiFiConfig.h" //Define STASSID and STAPSK in WifiConfig.h or remove this and define below
 #ifndef STASSID
 #define STASSID "your-ssid"
 #define STAPSK  "your-password"

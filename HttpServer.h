@@ -44,11 +44,14 @@ void setupHttpServer() {
   server.on("/pattern", HTTP_POST, []() {
     String value = server.arg("value");
     setPattern(value.toInt());
-    sendInt(currentPatternIndex);
+    
+    String json = "{\"id\":" + String(currentPatternIndex) + ",\"name\":\"" + patterns[currentPatternIndex].name + "\"}";
+    sendJson(json);
   });
 
   server.on("/pattern", HTTP_GET, []() {
-    sendInt(currentPatternIndex);
+    String json = "{\"id\":" + String(currentPatternIndex) + ",\"name\":\"" + patterns[currentPatternIndex].name + "\"}";
+    sendJson(json);
   });
 
   server.on("/patterns", HTTP_GET, []() {
