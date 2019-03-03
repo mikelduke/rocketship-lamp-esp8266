@@ -20,7 +20,6 @@ void ring() {
   }
 }
 
-
 void ring_two() {
   static uint8_t hue = 0;
 

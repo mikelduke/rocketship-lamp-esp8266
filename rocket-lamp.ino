@@ -11,6 +11,7 @@
 
 CRGB leds[NUM_LEDS];
 
+#include "LedUtil.h"
 #include "HttpServer.h"
 #include "Patterns.h"
 
@@ -60,6 +61,9 @@ void loadSettings() {
 }
 
 void setupWiFi() {
+  flashLeds(CRGB::Red, 2);
+  setColor(CRGB::White);
+
   Serial.printf("Connecting to SSID: %s\n", ssid);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -72,4 +76,6 @@ void setupWiFi() {
   Serial.println(ssid);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+
+  flashLeds(CRGB::Blue, 5);
 }
