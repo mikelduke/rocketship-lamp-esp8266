@@ -8,21 +8,6 @@ void handleRoot() {
   server.send(200, "text/plain", "hello from esp8266!");
 }
 
-void handleNotFound() {
-  String message = "File Not Found\n\n";
-  message += "URI: ";
-  message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
-  message += server.args();
-  message += "\n";
-  for (uint8_t i = 0; i < server.args(); i++) {
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
-  server.send(404, "text/plain", message);
-}
-
 void sendString(String value) {
   server.send(200, "text/plain", value);
 }
@@ -37,10 +22,17 @@ void sendJson(String value) {
 
 void setupHttpServer() {
   server.on("/", handleRoot);
-  server.onNotFound(handleNotFound);
-  server.begin();
-  Serial.println("HTTP server started");
-
+  
+  server.onNotFound([]() {
+    String message = "Error: Not Found\n\n";
+    message += "URI: ";
+    message += server.uri();
+    message += "\nMethod: ";
+    message += (server.method() == HTTP_GET) ? "GET" : "POST";
+    message += "\n";
+    server.send(404, "text/plain", message);
+  });
+  
   server.on("/pattern", HTTP_POST, []() {
     String value = server.arg("value");
     setPattern(value.toInt());
@@ -64,6 +56,9 @@ void setupHttpServer() {
     }
     json += "]}";
 
-    sendString(json);
+    sendJson(json);
   });
+
+  server.begin();
+  Serial.println("HTTP server started");
 }
