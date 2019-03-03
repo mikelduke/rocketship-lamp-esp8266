@@ -1,5 +1,6 @@
 #define FASTLED_ESP8266_NODEMCU_PIN_ORDER
 #include <FastLED.h>
+#include <EEPROM.h>
 
 #define NUM_LEDS 16
 #define DATA_PIN 3
@@ -10,58 +11,63 @@
 // Define the array of leds
 CRGB leds[NUM_LEDS];
 
-void setup() { 
+uint8_t currentPatternIndex = 0;
+
+#define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
+
+typedef void (*Pattern)();
+typedef Pattern PatternList[];
+typedef struct {
+  Pattern pattern;
+  String name;
+} PatternAndName;
+typedef PatternAndName PatternAndNameList[];
+
+#include "Patterns.h"
+
+PatternAndNameList patterns = {
+  { ring,                  "Ring" },
+  { ring_two,              "Ring Type 2" },
+  { huefade,               "Hue Fade" }
+};
+
+const uint8_t patternCount = ARRAY_SIZE(patterns);
+
+void setup() {
   Serial.begin(115200);
   Serial.println("Rocket Lamp");
+
+  EEPROM.begin(512);
+  loadSettings();
+
   LEDS.addLeds<WS2812,DATA_PIN,RGB>(leds,NUM_LEDS);
   LEDS.setBrightness(84);
+
+  // setPattern(1); // force override eeprom
 }
 
-void fadeall() { for(int i = 0; i < NUM_LEDS; i++) { leds[i].nscale8(250); } }
-
-void loop() { 
-  huefade();
+void loop() {
+  patterns[currentPatternIndex].pattern();
 }
 
-void ring() {
-  static uint8_t hue = 0;
-  Serial.println("ring");
+void loadSettings() {
+  currentPatternIndex = EEPROM.read(0);
+  if (currentPatternIndex < 0)
+    currentPatternIndex = 0;
+  else if (currentPatternIndex >= patternCount)
+    currentPatternIndex = patternCount - 1;
 
-  for(int i = 0; i < NUM_LEDS / 2; i++) {
-    leds[i] = CHSV(hue++, 255, 255);
-    leds[i + (NUM_LEDS /2)] = CHSV(hue++, 255, 255);
-    FastLED.show(); 
-    
-    fadeall();
-    delay(DELAY);
-  }
+  Serial.printf("loadSettings currentPatternIndex:%d\n", currentPatternIndex);
 }
 
-void ring_two() {
-  static uint8_t hue = 0;
-  Serial.println("ring_two");
+void setPattern(uint8_t value) {
+  if (value >= patternCount)
+    value = patternCount - 1;
 
-  for(int i = 0; i < NUM_LEDS / 2; i++) {
-    // Set the i'th led to red 
-    leds[i] = CHSV(hue++, 255, 255);
-    leds[i + (NUM_LEDS /2)] = CHSV(hue++, 255, 255);
-    FastLED.show(); 
+  currentPatternIndex = value;
 
-    leds[i] = CRGB::Black;
-    leds[i + (NUM_LEDS /2)] = CRGB::Black;
+  EEPROM.write(0, currentPatternIndex);
+  EEPROM.commit();
 
-    delay(DELAY);
-  }
-}
-
-void huefade() {
-  static uint8_t hue = 0;
-  Serial.println("huefade");
-
-  for(int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CHSV(hue, 255, 255);
-  }
-  hue++;
-  FastLED.show(); 
-  delay(DELAY / 2);
+  Serial.printf("Pattern: %d\n", currentPatternIndex);
 }
