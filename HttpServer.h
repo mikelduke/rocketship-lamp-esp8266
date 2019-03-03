@@ -1,16 +1,6 @@
 #include "Patterns.h"
-#include <ESP8266WiFi.h>
-// #include <WiFiClient.h>
+
 #include <ESP8266WebServer.h>
-
-#include "WiFiConfig.h"
-#ifndef STASSID
-#define STASSID "your-ssid"
-#define STAPSK  "your-password"
-#endif
-
-const char* ssid = STASSID;
-const char* password = STAPSK;
 
 extern ESP8266WebServer server(80);
 
@@ -46,18 +36,6 @@ void sendJson(String value) {
 }
 
 void setupHttpServer() {
-  Serial.printf("Connecting to SSID: %s\n", ssid);
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.print("Connected to ");
-  Serial.println(ssid);
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
   server.on("/", handleRoot);
   server.onNotFound(handleNotFound);
   server.begin();

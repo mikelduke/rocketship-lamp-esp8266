@@ -14,6 +14,17 @@ CRGB leds[NUM_LEDS];
 #include "HttpServer.h"
 #include "Patterns.h"
 
+#include <ESP8266WiFi.h>
+#include "WiFiConfig.h"
+#ifndef STASSID
+#define STASSID "your-ssid"
+#define STAPSK  "your-password"
+#endif
+
+const char* ssid = STASSID;
+const char* password = STAPSK;
+
+
 /******************* FUNCTIONS **********************/
 
 void setup() {
@@ -25,6 +36,8 @@ void setup() {
 
   LEDS.addLeds<WS2812,DATA_PIN,RGB>(leds,NUM_LEDS);
   LEDS.setBrightness(84);
+
+  setupWiFi();
 
   setupHttpServer();
 
@@ -44,4 +57,19 @@ void loadSettings() {
     currentPatternIndex = patternCount - 1;
 
   Serial.printf("loadSettings currentPatternIndex:%d\n", currentPatternIndex);
+}
+
+void setupWiFi() {
+  Serial.printf("Connecting to SSID: %s\n", ssid);
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
 }
