@@ -5,7 +5,23 @@
 extern ESP8266WebServer server(80);
 
 void handleRoot() {
-  server.send(200, "text/plain", "hello from esp8266!");
+  // server.send(200, "text/plain", "hello from esp8266!");
+
+  String page = "<html>\
+  <head>\
+    <title>Rocket Lamp</title>\
+  </head>\
+  <body>\
+    <h1>Rocket Lamp!</h1>\
+    <p>\n";
+  page += "<strong>Current Mode:</strong> ";
+  page += patterns[currentPatternIndex].name;
+  page += "<br />\n";
+  
+  page += "</p>\
+  </body>\
+</html>";
+  server.send(200, "text/html", page);
 }
 
 void sendString(String value) {
@@ -22,7 +38,7 @@ void sendJson(String value) {
 
 void setupHttpServer() {
   server.on("/", handleRoot);
-  
+
   server.onNotFound([]() {
     String message = "Error: Not Found\n\n";
     message += "URI: ";
