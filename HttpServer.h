@@ -13,14 +13,14 @@ void handleRoot() {
   </head>\
   <body>\
     <h1>Rocket Lamp!</h1>\
-    <p>\n";
+    <hr />\n";
   page += "<strong>Current Mode:</strong> ";
   page += patterns[currentPatternIndex].name;
   page += "<br />\n";
-  
-  page += "</p>\
-  </body>\
-</html>";
+  for (uint8_t i = 0; i < patternCount; i++) {
+    page += "<a href='/set/pattern?value=" + String(i) + "'>" + patterns[i].name + "</a><br />\n";
+  }
+  page += "</body></html>";
   server.send(200, "text/html", page);
 }
 
@@ -55,6 +55,13 @@ void setupHttpServer() {
     
     String json = "{\"id\":" + String(currentPatternIndex) + ",\"name\":\"" + patterns[currentPatternIndex].name + "\"}";
     sendJson(json);
+  });
+
+  server.on("/set/pattern", HTTP_GET, []() {
+    String value = server.arg("value");
+    setPattern(value.toInt());
+    server.sendHeader("Location", String("/"), true);
+    server.send ( 303, "text/plain", "");
   });
 
   server.on("/pattern", HTTP_GET, []() {
