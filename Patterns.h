@@ -1,4 +1,9 @@
-uint8_t currentPatternIndex = 0;
+#ifndef _PATTERNS_H
+#define _PATTERNS_H
+
+#include "PatternTypes.h"
+
+extern uint8_t currentPatternIndex = 0;
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
@@ -10,48 +15,25 @@ typedef struct {
 } PatternAndName;
 typedef PatternAndName PatternAndNameList[];
 
-void fadeall() { 
-  for(int i = 0; i < NUM_LEDS; i++) { 
-    leds[i].nscale8(250); 
-  } 
+// Add new patterns here
+extern PatternAndNameList patterns = {
+  { ring,                  "Ring" },
+  { ring_two,              "Ring Type 2" },
+  { huefade,               "Hue Fade" }
+};
+
+extern const uint8_t patternCount = ARRAY_SIZE(patterns);
+
+void setPattern(uint8_t value) {
+  if (value >= patternCount)
+    value = patternCount - 1;
+
+  currentPatternIndex = value;
+
+  EEPROM.write(0, currentPatternIndex);
+  EEPROM.commit();
+
+  Serial.printf("Pattern: %d\n", currentPatternIndex);
 }
 
-void ring() {
-  static uint8_t hue = 0;
-
-  for(int i = 0; i < NUM_LEDS / 2; i++) {
-    leds[i] = CHSV(hue++, 255, 255);
-    leds[i + (NUM_LEDS /2)] = CHSV(hue++, 255, 255);
-    FastLED.show(); 
-    
-    fadeall();
-    delay(DELAY);
-  }
-}
-
-
-void ring_two() {
-  static uint8_t hue = 0;
-
-  for(int i = 0; i < NUM_LEDS / 2; i++) {
-    leds[i] = CHSV(hue++, 255, 255);
-    leds[i + (NUM_LEDS /2)] = CHSV(hue++, 255, 255);
-    FastLED.show(); 
-
-    leds[i] = CRGB::Black;
-    leds[i + (NUM_LEDS /2)] = CRGB::Black;
-
-    delay(DELAY);
-  }
-}
-
-void huefade() {
-  static uint8_t hue = 0;
-
-  for(int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CHSV(hue, 255, 255);
-  }
-  hue++;
-  FastLED.show(); 
-  delay(DELAY / 2);
-}
+#endif
