@@ -1,7 +1,8 @@
 #ifndef _PATTERNS_H
 #define _PATTERNS_H
 
-#include "PatternTypes.h"
+#include "BasicPatterns.h"
+#include "DemoPatterns.h"
 #include "FirePattern.h"
 
 extern uint8_t currentPatternIndex = 0;
@@ -21,7 +22,11 @@ extern PatternAndNameList patterns = {
   { ring,                  "Ring" },
   { ring_two,              "Ring Type 2" },
   { huefade,               "Hue Fade" },
-  { fire2012,              "Fire"}
+  { rainbow,               "Rainbow" },
+//   { rainbowWithGlitter,    "Rainbow with Glitter" },
+  { fire2012,              "Fire" },
+  { confetti,              "Confetti" },
+  { juggle,                "Juggle" }
 };
 
 extern const uint8_t patternCount = ARRAY_SIZE(patterns);
