@@ -2,6 +2,7 @@
 #define _PATTERNS_H
 
 #include "PatternTypes.h"
+#include "FirePattern.h"
 
 extern uint8_t currentPatternIndex = 0;
 
@@ -19,7 +20,8 @@ typedef PatternAndName PatternAndNameList[];
 extern PatternAndNameList patterns = {
   { ring,                  "Ring" },
   { ring_two,              "Ring Type 2" },
-  { huefade,               "Hue Fade" }
+  { huefade,               "Hue Fade" },
+  { fire2012,              "Fire"}
 };
 
 extern const uint8_t patternCount = ARRAY_SIZE(patterns);
