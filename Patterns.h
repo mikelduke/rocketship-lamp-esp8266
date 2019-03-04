@@ -26,7 +26,11 @@ extern PatternAndNameList patterns = {
 //   { rainbowWithGlitter,    "Rainbow with Glitter" },
   { fire2012,              "Fire" },
   { confetti,              "Confetti" },
-  { juggle,                "Juggle" }
+  { juggle,                "Juggle" },
+  { white,                 "Set to White"},
+  { red,                   "Set to Red"},
+  { blue,                  "Set to Blue"},
+  { green,                   "Set to Green"}
 };
 
 extern const uint8_t patternCount = ARRAY_SIZE(patterns);

@@ -46,4 +46,20 @@ void huefade() {
   delay(DELAY / 2);
 }
 
+void white() {
+  setColor(CRGB::White);
+}
+
+void red() {
+  setColor(CRGB::Red);
+}
+
+void blue() {
+  setColor(CRGB::Blue);
+}
+
+void green() {
+  setColor(CRGB::Green);
+}
+
 #endif
