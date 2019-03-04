@@ -35,7 +35,7 @@ void setup() {
   EEPROM.begin(512);
   loadSettings();
 
-  LEDS.addLeds<WS2812,DATA_PIN,RGB>(leds,NUM_LEDS);
+  LEDS.addLeds<WS2812,DATA_PIN,GRB>(leds,NUM_LEDS);
   LEDS.setBrightness(84);
 
   setupWiFi();
