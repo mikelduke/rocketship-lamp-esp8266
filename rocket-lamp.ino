@@ -36,7 +36,7 @@ void setup() {
   loadSettings();
 
   LEDS.addLeds<WS2812,DATA_PIN,GRB>(leds,NUM_LEDS);
-  LEDS.setBrightness(84);
+  LEDS.setBrightness(250);
 
   setupWiFi();
 
